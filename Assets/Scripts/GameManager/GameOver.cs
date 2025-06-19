@@ -31,14 +31,9 @@ public class GameOver : MonoBehaviour
     public void Sair()
     {
         StartCoroutine("Timer");
-        // if (Application.isEditor) // se estiver executando o jogo na Unity
-        // {
-        //    EditorApplication.isPlaying = false; // sairá do modo jogo da Unity
-        // }
-        // else // se estiver executando o jogo fora da Unity 
-        // {
+       
             Application.Quit(); // fechará o aplicativo
-        //}
+    
         
     }
 }

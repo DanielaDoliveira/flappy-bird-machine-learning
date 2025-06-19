@@ -1,59 +1,59 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
+
+using TMPro;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
-
-/*Ao adicionar o script no nosso player
- o comando RequireComponent
- já adiciona o componente Rigidbody2D no nosso objeto 
- automaticamente */
 [RequireComponent(typeof(Rigidbody2D))]
 public class PlayerController : MonoBehaviour
 {
-    public Rigidbody2D jogadorRb; 
-    public int forcaDoPulo;   
-    public Animator playerAnimator;
-    public PointsSystem pointsSystem;
-   
-    void Start()
+     private Rigidbody2D _jogadorRb; 
+     public int forcaDoPulo;   
+     private Animator _playerAnimator;
+
+     [Header("Points Text (TMP):")]
+     [SerializeField]private TextMeshProUGUI pointsText;
+    private Player _player;
+    private PointsSystem _pointsSystem;
+    private int points = 0;
+
+    private void Start()
     {
-        
+        _jogadorRb = GetComponent<Rigidbody2D>();
+        _playerAnimator = GetComponent<Animator>();
+        _pointsSystem = new PointsSystem(pointsText,points);
+        _player = new Player(_jogadorRb, forcaDoPulo,_playerAnimator);
+      
+      
     }
+
+    public void ClickInput() => _player.Control();
    
 
-    
-    public void ClickInput()
-   {
-       //Adiciona força à fisica do jogador 
-       //Vector2.Up ->forçar para cima
-       //Impulse -> o tipo de força. Queremos um impulso para cima
-       //no slide falar sobre a força do pulo
-
-       jogadorRb.AddForce(Vector2.up * forcaDoPulo, ForceMode2D.Impulse);
-   }
-
-   public void MorteDoPlayer()
-   {
-      GerenciadorDeSons.instancia.TocarSomDano();
-       //Carrega a tela de Game Over
-       SceneManager.LoadScene("GameOver");
-   }
+   public void MorteDoPlayer() => _player.Dead();
+   
 
    public void OnCollisionEnter2D(Collision2D collision)
    {
        if (collision.gameObject.CompareTag("Obstáculo"))
        {
-         
-           if (pointsSystem.points > PlayerPrefs.GetInt("POINTS"))
+           if (_pointsSystem.points > PlayerPrefs.GetInt("POINTS"))
            {
-               PlayerPrefs.SetInt("POINTS", pointsSystem.points);
-              
+               PlayerPrefs.SetInt("POINTS", _pointsSystem.points);
+             
            }
-           playerAnimator.Play("Dead");
+          
+           _playerAnimator.Play("Dead");
+        
        }
       
+   }
+   private void OnTriggerEnter2D(Collider2D other)
+   {
+       if (other.gameObject.CompareTag("POINT"))
+       {
+        
+           _pointsSystem.MakePoints();
+       }
+       
    }
 
    

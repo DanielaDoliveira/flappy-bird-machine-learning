@@ -20,13 +20,14 @@ public class Generator : MonoBehaviour
         altura[0] = 6.49f;
         altura[1] = 4.44f;
         altura[2] = 2.82f;
-       InvokeRepeating("Gerar", 0, tempoParaGerar);
+      
+       InvokeRepeating("Gerar", 1, tempoParaGerar);
     }
 
     // Update is called once per frame
    
 
-    void Gerar()
+    public void Gerar()
     { 
         rand= (int)DateTime.Now.Ticks;
      rand = Random.Range(0,3);
